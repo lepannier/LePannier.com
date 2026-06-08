@@ -71,8 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (burgerMenu) {
         burgerMenu.addEventListener('click', () => {
-            burgerMenu.classList.toggle('active');
+            const isActive = burgerMenu.classList.toggle('active');
             navLinks.classList.toggle('active');
+            burgerMenu.setAttribute('aria-expanded', isActive);
         });
         
         // Close menu when clicking a link
@@ -80,7 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
             link.addEventListener('click', () => {
                 burgerMenu.classList.remove('active');
                 navLinks.classList.remove('active');
+                burgerMenu.setAttribute('aria-expanded', 'false');
             });
         });
     }
 });
+
+// Scroll Reveal Animations
+const revealElements = document.querySelectorAll(".reveal");
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.15,
+    rootMargin: "0px 0px -50px 0px"
+});
+revealElements.forEach(el => revealObserver.observe(el));
